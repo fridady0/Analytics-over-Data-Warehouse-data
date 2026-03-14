@@ -1,129 +1,41 @@
 
-# SQL Data Warehouse & Advanced Sales Analytics Project
+# 📊 SQL Exploratory Data Analysis (EDA) & Business Analytics Project
 
 ## Overview
 
-This project demonstrates the design and implementation of a **modern SQL-based data warehouse and analytics layer** using **Medallion Architecture**. The goal of the project is to simulate a real-world **data engineering and analytics workflow**, transforming raw operational data into structured analytical insights.
+This project performs **Exploratory Data Analysis (EDA)** and **advanced analytical queries** using SQL on a sales dataset.
 
-The project includes:
+The objective of this project is to explore business data, analyze patterns, and extract insights using **analytical SQL techniques** such as:
 
-- Building a **multi-layer data warehouse**
-- Cleaning and transforming raw data
-- Creating **dimensional models**
-- Performing **advanced SQL analytics**
-- Developing **customer and product analytical reports**
-
-The final output provides a **business-ready analytics layer** that enables data analysts, business teams, and BI dashboards to extract insights efficiently.
-
----
-
-# Architecture
-
-This project follows the **Medallion Architecture**, which organizes data into progressive layers of refinement.
-
-```
-Source Systems (CRM + ERP)
-        │
-        ▼
-Bronze Layer (Raw Data)
-        │
-        ▼
-Silver Layer (Cleaned & Transformed Data)
-        │
-        ▼
-Gold Layer (Business Analytics & Reporting)
-```
-
-Each layer serves a different purpose in the data pipeline.
-
----
-
-# Bronze Layer — Raw Data Ingestion
-
-The **Bronze Layer** stores raw data ingested directly from source systems without transformation. This layer acts as the **single source of truth for raw data**.
-
-### Source Systems
-
-The project simulates two operational systems:
-
-**CRM System**
-- Customer information
-- Product details
-- Sales transactions
-
-**ERP System**
-- Additional customer information
-- Product categories
-- Location data
-
-### Example Bronze Tables
-
-```
-crm_cust_info
-crm_prd_info
-crm_sales_details
-
-erp_cust_az12
-erp_loc_a101
-erp_px_cat_g1v2
-```
-
-These tables preserve the original structure of incoming data.
-
----
-
-# Silver Layer — Data Cleaning & Transformation
-
-The **Silver Layer** transforms raw data into **clean, standardized, and reliable datasets**.
-
-Data processing steps performed:
-
-### Data Cleaning
-
-- Removal of duplicate records
-- Handling missing values
-- Trimming whitespace
-- Standardizing data formats
-- Resolving inconsistent values
-- Correcting invalid dates
-
-### Data Validation
-
-Several validation techniques were applied:
-
-- Null checks
-- Duplicate detection
-- Referential integrity validation
-- Data type corrections
-
-### SQL Techniques Used
-
-The transformation pipeline uses several SQL features:
-
-- `ROW_NUMBER()` for duplicate detection
-- `CASE` statements for conditional logic
-- `TRIM()` for text cleaning
-- `ISNULL()` for null handling
+- Aggregations
 - Window functions
-- Data standardization logic
+- Segmentation
+- Time-series analysis
+- Customer analytics
+- Product performance analysis
 
-A stored procedure was created to automate loading:
+The dataset used in this project comes from a previously built **data warehouse**, but the focus of this project is strictly **data analysis and business insights using SQL**.
 
-```
-silver.load_silver
-```
-
-This procedure performs the **entire transformation pipeline** for the silver layer.
+This project demonstrates how SQL can be used as a powerful tool for **data exploration, business intelligence, and analytical reporting**.
 
 ---
 
-# Gold Layer — Analytical Data Model
+# 🎯 Objectives
 
-The **Gold Layer** contains analytics-ready tables designed using **Dimensional Modeling** principles.
+The main goals of this project are:
 
-The goal is to make the data easy for analysts and BI tools to query.
+- Perform **initial exploratory analysis**
+- Understand **business metrics and trends**
+- Analyze **dimensions and measures**
+- Perform **time-series analysis**
+- Identify **high-performing products and customers**
+- Create **analytical reports for business decision making**
 
-The model follows a **Star Schema**.
+---
+
+# 📂 Dataset
+
+The dataset consists of **sales transaction data** with supporting **customer and product information**.
 
 ### Fact Table
 
@@ -131,15 +43,15 @@ The model follows a **Star Schema**.
 gold.fact_sales
 ```
 
-Contains measurable business events such as sales transactions.
+Contains transactional sales records.
 
 Example fields:
 
 ```
 order_number
+order_date
 customer_key
 product_key
-order_date
 sales_amount
 quantity
 price
@@ -152,42 +64,71 @@ gold.dim_customers
 gold.dim_products
 ```
 
-These provide descriptive context for the fact table.
-
-Example customer attributes:
-
-```
-customer_key
-first_name
-last_name
-country
-gender
-birthdate
-```
-
-Example product attributes:
-
-```
-product_key
-product_name
-category
-subcategory
-cost
-```
+These tables provide descriptive information about customers and products.
 
 ---
 
-# Exploratory Data Analysis (EDA)
+# 🧠 Key Analytical Concepts Used
 
-After building the warehouse, exploratory analysis was performed using SQL.
+## Dimensions
 
-The EDA phase focused on understanding:
+Dimensions are descriptive attributes used to categorize and group data.
 
-- Data distributions
-- Key business metrics
-- Customer demographics
-- Product categories
-- Time coverage of sales data
+Examples:
+
+```
+customer_key
+customer_name
+country
+product_name
+category
+subcategory
+order_date
+```
+
+Dimensions help answer questions like:
+
+- Who bought the product?
+- What product was sold?
+- Which category generated revenue?
+- When did sales occur?
+
+---
+
+## Measures
+
+Measures are **numeric metrics** that represent business performance and can be aggregated.
+
+Examples:
+
+```
+sales_amount
+quantity
+price
+total_sales
+total_orders
+avg_order_value
+```
+
+Measures help answer questions like:
+
+- How much revenue was generated?
+- How many products were sold?
+- What is the average selling price?
+
+---
+
+# 🔎 Initial Data Exploration
+
+The first phase of analysis focuses on understanding the dataset.
+
+Key analyses performed:
+
+- Explore available tables and columns
+- Identify distinct values
+- Understand product hierarchy
+- Identify customer distribution
+- Analyze date ranges of sales data
 
 Example query:
 
@@ -196,22 +137,24 @@ SELECT DISTINCT country
 FROM gold.dim_customers;
 ```
 
+This helps understand the geographic distribution of customers.
+
 ---
 
-# Business Metrics Analysis
+# 📊 Business Metrics Analysis
 
-Key performance indicators were calculated to evaluate business performance.
+Core business metrics were calculated to evaluate overall performance.
 
-### Metrics Calculated
+Metrics calculated include:
 
-- Total Sales
-- Total Orders
-- Total Quantity Sold
-- Total Customers
-- Total Products
-- Average Selling Price
+- Total sales
+- Total orders
+- Total quantity sold
+- Total number of customers
+- Total number of products
+- Average selling price
 
-Example metric query:
+Example:
 
 ```sql
 SELECT
@@ -219,13 +162,69 @@ SUM(sales_amount) AS total_sales
 FROM gold.fact_sales;
 ```
 
+These metrics provide a **high-level overview of business performance**.
+
 ---
 
-# Time-Based Analysis
+# 📊 Dimension Analysis
 
-Time-based analysis helps identify **sales trends and seasonality**.
+Dimension analysis examines how metrics vary across different categories.
 
-Example monthly sales analysis:
+Examples of dimensions analyzed:
+
+- Country
+- Gender
+- Product category
+- Product subcategory
+
+Example query:
+
+```sql
+SELECT
+category,
+COUNT(product_key) AS total_products
+FROM gold.dim_products
+GROUP BY category;
+```
+
+This helps identify **how data is distributed across business entities**.
+
+---
+
+# 📊 Measure Analysis
+
+Measure analysis focuses on analyzing **numerical business metrics**.
+
+Examples:
+
+- Total revenue
+- Quantity sold
+- Average price
+- Number of orders
+
+Example:
+
+```sql
+SELECT
+SUM(quantity) AS total_items_sold
+FROM gold.fact_sales;
+```
+
+This helps understand **overall business performance**.
+
+---
+
+# 📈 Time-Series Analysis
+
+Time-based analysis was performed to identify **sales trends over time**.
+
+Example analysis:
+
+- Sales by year
+- Sales by month
+- Customer activity over time
+
+Example query:
 
 ```sql
 SELECT
@@ -236,11 +235,13 @@ FROM gold.fact_sales
 GROUP BY YEAR(order_date), MONTH(order_date);
 ```
 
+This helps identify **seasonality and growth patterns**.
+
 ---
 
-# Cumulative Analysis
+# 📈 Cumulative Analysis
 
-Cumulative analysis tracks **running totals of business metrics**.
+Cumulative analysis tracks the **running total of business metrics over time**.
 
 Example:
 
@@ -249,21 +250,21 @@ SUM(total_sales)
 OVER(PARTITION BY YEAR(order_date) ORDER BY order_date)
 ```
 
-This allows monitoring **revenue growth over time**.
+This allows monitoring **revenue growth trends**.
 
 ---
 
-# Performance Analysis
+# 📊 Performance Analysis
 
-Product performance was evaluated by comparing:
+Product performance was analyzed by comparing:
 
-- Current sales
-- Average product sales
-- Previous year sales
+- Current year sales
+- Historical averages
+- Previous year performance
 
-Techniques used:
+SQL features used:
 
-- Window Functions
+- Window functions
 - `LAG()`
 - `PARTITION BY`
 
@@ -271,45 +272,31 @@ This helps identify:
 
 - High-performing products
 - Declining products
-- Year-over-year changes
+- Sales growth patterns
 
 ---
 
-# Part-to-Whole Analysis
+# 📊 Part-to-Whole Analysis
 
-Part-to-whole analysis determines how much each category contributes to total revenue.
+This analysis determines how much each category contributes to total sales.
 
 Formula:
 
 ```
-Category Revenue / Total Revenue * 100
+Category Sales / Total Sales × 100
 ```
 
-This helps identify **major revenue drivers**.
+This helps identify **key revenue-driving product categories**.
 
 ---
 
-# Customer Segmentation
+# 📊 Data Segmentation
 
-Customers were segmented based on **spending behavior and relationship duration**.
+Segmentation divides data into meaningful groups for deeper insights.
 
-| Segment | Description |
-|--------|-------------|
-| VIP | High spending and long relationship |
-| Regular | Moderate spending and long relationship |
-| New | Recently acquired customers |
+## Product Segmentation
 
-Segmentation helps businesses:
-
-- target high-value customers
-- design marketing campaigns
-- improve customer retention
-
----
-
-# Product Segmentation
-
-Products were categorized based on revenue performance.
+Products were grouped based on revenue performance.
 
 | Segment | Criteria |
 |--------|----------|
@@ -317,16 +304,25 @@ Products were categorized based on revenue performance.
 | Mid Range | Revenue ≥ 10,000 |
 | Low Performer | Revenue < 10,000 |
 
-This helps identify:
+---
 
-- top-performing products
-- underperforming inventory
+## Customer Segmentation
+
+Customers were grouped based on spending behavior and relationship duration.
+
+| Segment | Description |
+|--------|-------------|
+| VIP | High spending + long customer relationship |
+| Regular | Moderate spending |
+| New | Recently acquired customers |
+
+This helps identify **valuable customers and purchasing behavior**.
 
 ---
 
-# Customer Analytics Report
+# 📊 Customer Analytics Report
 
-A reusable analytical view was created:
+A reusable analytical report was created:
 
 ```
 gold.customers_report
@@ -340,17 +336,22 @@ Key metrics include:
 - avg_monthly_spend
 - recency
 - lifespan
+- customer_segments
 
-This report can be used by **BI dashboards and marketing teams**.
+This report can be used for:
+
+- customer analytics
+- marketing campaigns
+- retention strategies
 
 ---
 
-# Product Analytics Report
+# 📊 Product Analytics Report
 
-Another analytical view was created:
+A product analytics report was also created:
 
 ```
-gold.products_report
+gold.report_products
 ```
 
 Metrics include:
@@ -363,56 +364,29 @@ Metrics include:
 - avg_monthly_revenue
 - product_segment
 
----
-
-# Key Data Engineering Concepts Demonstrated
-
-### Data Warehousing
-- Star schema modeling
-- Fact and dimension tables
-
-### Data Transformation
-- Data cleaning pipelines
-- Standardization processes
-
-### Analytical SQL
-- Window functions
-- Aggregations
-- CTE pipelines
-- Time-based analysis
-
-### Business Analytics
-- Customer segmentation
-- Product performance analysis
-- KPI generation
-- Revenue contribution analysis
+This report helps evaluate **product performance and demand**.
 
 ---
 
-# Technologies Used
+# 🛠 Technologies Used
 
 - SQL Server
 - T-SQL
-- Dimensional Modeling
-- Medallion Architecture
 - Window Functions
+- Common Table Expressions (CTEs)
 - Analytical SQL
 
 ---
 
-# Project Structure
+# 📂 Project Structure
 
 ```
-sql-data-warehouse-project
-│
-├── datasets
+sql-eda-sales-analysis
 │
 ├── sql
-│   ├── bronze_layer.sql
-│   ├── silver_layer.sql
-│   ├── gold_layer.sql
-│   ├── exploratory_analysis.sql
-│   ├── advanced_analysis.sql
+│   ├── 01_initial_exploration.sql
+│   ├── 02_dimension_measure_analysis.sql
+│   ├── 03_advanced_analytics.sql
 │
 ├── reports
 │   ├── customers_report.sql
@@ -423,28 +397,26 @@ sql-data-warehouse-project
 
 ---
 
-# Key Outcomes
+# 🚀 Key Skills Demonstrated
 
-- Built a **SQL-based data warehouse**
-- Transformed raw data into **analytics-ready datasets**
-- Extracted business insights using **advanced SQL**
-- Created reusable **customer and product reports**
+This project demonstrates skills in:
 
----
-
-# Future Improvements
-
-- Add profit and margin analysis
-- Build Power BI dashboards
-- Automate ETL pipelines
-- Implement data quality monitoring
+- SQL data exploration
+- Analytical SQL
+- Business metrics analysis
+- Window functions
+- Segmentation analysis
+- Time-series analysis
+- Customer analytics
+- Product performance analysis
 
 ---
 
-# Author
+# 👨‍💻 Author
 
-**Vatsalya Prasad**  
-Computer Science Graduate | Aspiring Data Engineer / Data Analyst
+**Vatsalya Prasad**
 
-GitHub:  
+Computer Science Graduate | Aspiring Data Analyst / Data Engineer
+
+GitHub:
 https://github.com/fridady0/Data-WareHouse-Project---Sql
